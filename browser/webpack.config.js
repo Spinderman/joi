@@ -27,16 +27,6 @@ module.exports = {
                 ]
             },
             {
-                use: 'null-loader',
-                include: [
-                    Path.join(__dirname, '../lib/annotate.js'),
-                    Path.join(__dirname, '../lib/manifest.js'),
-                    Path.join(__dirname, '../lib/trace.js'),
-                    Path.join(__dirname, '../lib/types/binary.js'),
-                    Path.join(__dirname, '../node_modules/@sideway/address/lib/tlds.js')
-                ]
-            },
-            {
                 test: /\.js$/,
                 use: {
                     loader: 'babel-loader',
@@ -57,8 +47,18 @@ module.exports = {
             }
         ]
     },
-    node: {
-        url: 'empty',
-        util: 'empty'
+    node: false,
+    resolve: {
+      alias: {
+          [Path.join(__dirname, '../lib/annotate.js')]: false,
+          [Path.join(__dirname, '../lib/manifest.js')]: false,
+          [Path.join(__dirname, '../lib/trace.js')]: false,
+          [Path.join(__dirname, '../lib/types/binary.js')]: false,
+          [Path.join(__dirname, '../node_modules/@sideway/address/lib/tlds.js')]: false,
+      },
+      fallback: {
+        url: false,
+        util: false,
+      }
     }
 };

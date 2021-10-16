@@ -918,7 +918,7 @@ const schema = Joi.any().note('this is special', 'this is important');
 
 #### `any.only()`
 
-Requires the validated value to match of the provided `any.allow()` values. It has not effect when
+Requires the validated value to match of the provided `any.allow()` values. It has no effect when
 called together with `any.valid()` since it already sets the requirements. When used with
 `any.allow()` it converts it to an `any.valid()`.
 
@@ -3295,7 +3295,7 @@ const schema = custom.object({
 - `original`: The original value passed untouched to `validate()`.
 - `prefs`: The prepared validation options.
 - `schema`: The reference to the current schema. Useful if you need to use any of the [Advanced functions](#advanced-functions).
-- `state`: The current validation state. See [Validation state](#state)
+- `state`: The current validation state. See [Validation state](#validation-state).
 - `error`: A function with signature `function (code, local, localState = currentState) {}` similar to [`$_createError()`](#_createerrorcode-value-local-state-prefs-options) but with the current value, validation options, current state passed where:
     - `code`: The error code. 
     - `local`: Local context used to interpolate the message.
@@ -4041,13 +4041,13 @@ Additional local context properties:
 
 #### `object.missing`
 
-The OR or XOR condition between the properties you specified was not satisfied in that object, none of it were set.
+The OR or XOR condition between the properties you specified was not satisfied in that object, none of them were set.
 
 Additional local context properties:
 ```ts
 {
-    peers: Array<string>, // List of properties were none of it was set
-    peersWithLabels: Array<string> // List of labels for the properties were none of it was set
+    peers: Array<string>, // List of properties where none of them were set
+    peersWithLabels: Array<string> // List of labels for the properties where none of them were set
 }
 ```
 
