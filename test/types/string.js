@@ -1412,7 +1412,8 @@ describe('string', () => {
                     path: [],
                     type: 'string.email',
                     context: { value: '123456789012345678901234567890123456789012345678901234567890@12345678901234567890123456789012345678901234567890123456789.12345678901234567890123456789012345678901234567890123456789.12345678901234567890123456789012345678901234567890123456789.12345.toolong.com', invalids: ['123456789012345678901234567890123456789012345678901234567890@12345678901234567890123456789012345678901234567890123456789.12345678901234567890123456789012345678901234567890123456789.12345678901234567890123456789012345678901234567890123456789.12345.toolong.com'], label: 'value' }
-                }]
+                }],
+                ['foo@bar%2ecom', false, '"value" must be a valid email']
             ]);
         });
 
@@ -4211,6 +4212,18 @@ describe('string', () => {
                     path: [],
                     type: 'string.hostname',
                     context: { value: '0:?:0:0:0:0:0:1', label: 'value' }
+                }],
+                ['10.10.10.10/24', false, {
+                    message: '"value" must be a valid hostname',
+                    path: [],
+                    type: 'string.hostname',
+                    context: { value: '10.10.10.10/24', label: 'value' }
+                }],
+                ['2001:db8::/48', false, {
+                    message: '"value" must be a valid hostname',
+                    path: [],
+                    type: 'string.hostname',
+                    context: { value: '2001:db8::/48', label: 'value' }
                 }]
             ]);
         });
@@ -5600,6 +5613,14 @@ describe('string', () => {
                         label: 'value'
                     }
                 }]
+            ]);
+        });
+
+        it('allows empty string when min explicitly set to zero', () => {
+
+            Helper.validate(Joi.string().min(0), [
+                [undefined, true],
+                ['', true]
             ]);
         });
 
@@ -7422,6 +7443,12 @@ describe('string', () => {
 
                 Joi.string().uri({});
             }).to.not.throw();
+        });
+
+        it('handles missing domain', () => {
+
+            const schema = Joi.string().uri({ domain: { tlds: { allow: true } } });
+            expect(() => schema.validate('http:example.com')).to.not.throw();
         });
 
         it('validates uri requires uriOptions as an object', () => {

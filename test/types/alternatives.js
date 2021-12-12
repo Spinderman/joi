@@ -1396,13 +1396,49 @@ describe('alternatives', () => {
                     message: '"value" matches more than one allowed type',
                     path: [],
                     type: 'alternatives.one',
-                    context: { label: 'value', value: '2' }
+                    context: {
+                        label: 'value',
+                        value: '2'
+                    }
                 }],
                 [true, false, {
                     message: '"value" does not match any of the allowed types',
                     path: [],
                     type: 'alternatives.any',
-                    context: { label: 'value', value: true }
+                    context: {
+                        label: 'value',
+                        value: true,
+                        details: [
+                            {
+                                details: [
+                                    {
+                                        context: {
+                                            label: 'value',
+                                            value: true
+                                        },
+                                        message: '"value" must be a number',
+                                        path: [],
+                                        type: 'number.base'
+                                    }
+                                ],
+                                message: '"value" must be a number'
+                            },
+                            {
+                                details: [
+                                    {
+                                        context: {
+                                            label: 'value',
+                                            value: true
+                                        },
+                                        message: '"value" must be a string',
+                                        path: [],
+                                        type: 'string.base'
+                                    }
+                                ],
+                                message: '"value" must be a string'
+                            }
+                        ]
+                    }
                 }]
             ]);
         });
@@ -1434,19 +1470,90 @@ describe('alternatives', () => {
                     message: '"value" does not match all of the required types',
                     path: [],
                     type: 'alternatives.all',
-                    context: { label: 'value', value: 'x' }
+                    context: {
+                        label: 'value',
+                        value: 'x',
+                        details: [
+                            {
+                                details: [
+                                    {
+                                        context: {
+                                            label: 'value',
+                                            value: 'x'
+                                        },
+                                        message: '"value" must be a number',
+                                        path: [],
+                                        type: 'number.base'
+                                    }
+                                ],
+                                message: '"value" must be a number'
+                            }
+                        ]
+                    }
                 }],
                 [2, false, {
                     message: '"value" does not match all of the required types',
                     path: [],
                     type: 'alternatives.all',
-                    context: { label: 'value', value: 2 }
+                    context: {
+                        label: 'value',
+                        value: 2,
+                        details: [
+                            {
+                                details: [
+                                    {
+                                        context: {
+                                            label: 'value',
+                                            value: 2
+                                        },
+                                        message: '"value" must be a string',
+                                        path: [],
+                                        type: 'string.base'
+                                    }
+                                ],
+                                message: '"value" must be a string'
+                            }
+                        ]
+                    }
                 }],
                 [true, false, {
                     message: '"value" does not match any of the allowed types',
                     path: [],
                     type: 'alternatives.any',
-                    context: { label: 'value', value: true }
+                    context: {
+                        label: 'value',
+                        value: true,
+                        details: [
+                            {
+                                details: [
+                                    {
+                                        context: {
+                                            label: 'value',
+                                            value: true
+                                        },
+                                        message: '"value" must be a number',
+                                        path: [],
+                                        type: 'number.base'
+                                    }
+                                ],
+                                message: '"value" must be a number'
+                            },
+                            {
+                                details: [
+                                    {
+                                        context: {
+                                            label: 'value',
+                                            value: true
+                                        },
+                                        message: '"value" must be a string',
+                                        path: [],
+                                        type: 'string.base'
+                                    }
+                                ],
+                                message: '"value" must be a string'
+                            }
+                        ]
+                    }
                 }]
             ]);
         });
@@ -1468,8 +1575,66 @@ describe('alternatives', () => {
                     message: '"value" does not match all of the required types',
                     path: [],
                     type: 'alternatives.all',
-                    context: { label: 'value', value: { lol: 5 } }
+                    context: {
+                        label: 'value',
+                        value: { lol: 5 },
+                        details: [
+                            {
+                                details: [
+                                    {
+                                        context: {
+                                            key: 'lol',
+                                            label: 'lol',
+                                            value: 5
+                                        },
+                                        message: '"lol" must be a string',
+                                        path: ['lol'],
+                                        type: 'string.base'
+                                    }
+                                ],
+                                message: '"lol" must be a string'
+                            }
+                        ]
+                    }
                 }]
+            ]);
+        });
+
+        it('merges defaults when nesting alternatives', () => {
+
+            const schema = Joi.alternatives([
+                Joi.alternatives(
+                    Joi.object({ foo: Joi.string().default('bar') }).unknown(),
+                    Joi.object({ baz: Joi.boolean().default(false) }).unknown()
+                ).
+                    match('all'),
+
+                Joi.object({ lol: Joi.boolean().default(true) }).unknown()
+            ])
+                .match('all');
+
+            Helper.validate(schema, [
+                [{}, true, { foo: 'bar', baz: false, lol: true }],
+                [{ foo: 'rofl' }, true, { foo: 'rofl', baz: false, lol: true }],
+                [{ foo: 9 }, false, '"value" does not match all of the required types']
+            ]);
+        });
+
+        it('ignores defaults when nesting does not include objects', () => {
+
+            const schema = Joi.alternatives([
+                Joi.alternatives(
+                    Joi.number(),
+                    Joi.string()
+                ).
+                    match('all'),
+
+                Joi.any()
+            ])
+                .match('all');
+
+            Helper.validate(schema, [
+                ['123', true, '123']
             ]);
         });
 
