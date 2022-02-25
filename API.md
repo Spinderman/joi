@@ -252,6 +252,7 @@ The reference names can have one of the following prefixes:
 
 The formula syntax also supports built-in functions:
 - `if(condition, then, otherwise)` - returns `then` when `condition` is truthy, otherwise `otherwise`.
+- `length(item)` - reutrn the length of an array or string, the number of keys of an object, otherwise `null`.
 - `msg(code)` - embeds another error code message.
 - `number(value)` - cast value to a number.
 
@@ -1999,7 +2000,7 @@ Supports the methods of the [`any()`](#any) type.
 
 When links are combined with `any.when()` rules, the rules are applied after the link is resolved to the linked schema.
 
-Names links are recommended for most use cases as they are easy to reason and understand, and when mistakes are made, they simply error with invalid link message. Relative links are often hard to follow, especially when they are nested in array or alternatives rules. Absolute links are useful only when the schema is never reused inside another schema as the root is the run-time root of the schema being validated, not the current schema root.
+Named links are recommended for most use cases as they are easy to reason and understand, and when mistakes are made, they simply error with invalid link message. Relative links are often hard to follow, especially when they are nested in array or alternatives rules. Absolute links are useful only when the schema is never reused inside another schema as the root is the run-time root of the schema being validated, not the current schema root.
 
 Note that named links must be found in a direct ancestor of the link. The names are searched by iterating over the chain of schemas from the current schema to the root. To reach an uncle or cousin, you must use the name of a common ancestor such as a grandparent and then walk down the tree.
 
@@ -3582,7 +3583,7 @@ Additional local context properties:
 ```ts
 {
     knownMisses: Array<string>, // Labels of all the missing values
-    unknownMisees: number // Count of missing values that didn't have a label
+    unknownMisses: number // Count of missing values that didn't have a label
 }
 ```
 
@@ -3604,7 +3605,7 @@ Some values were expected to be present in the array and are missing. This error
 Additional local context properties:
 ```ts
 {
-    unknownMisees: number // Count of missing values that didn't have a label
+    unknownMisses: number // Count of missing values that didn't have a label
 }
 ```
 
